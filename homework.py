@@ -8,7 +8,6 @@ import logging
 
 from exceptions import (
     NoTokenError,
-    IncorrectAnswerError,
     EndpointNotAvailable,
     UnknownHomeworkStatus,
     SendMessageError,
@@ -77,15 +76,18 @@ def get_api_answer(timestamp: int) -> dict[str, str]:
 
 def check_response(response: dict[str, str]) -> None:
     """Проверяет ответ API на соответствие документации."""
-    try:
-        if not isinstance(response['homeworks'], list):
-            raise TypeError
-        if not (('current_date' in response) and ('homeworks' in response)):
-            raise KeyError
-    except KeyError or TypeError:
-        message = 'Ответ не соответствует ожидаемому'
+    message = 'Ответ не соответствует ожидаемому'
+    if not isinstance(response, dict):
         logger.error(message)
-        raise IncorrectAnswerError(message)
+        raise TypeError(message)
+
+    if 'current_date' not in response or 'homeworks' not in response:
+        logger.error(message)
+        raise KeyError(message)
+
+    if not isinstance(response['homeworks'], list):
+        logger.error(message)
+        raise TypeError(message)
 
 
 def parse_status(homework: dict[str, str]) -> str:
@@ -115,14 +117,14 @@ def main() -> NoReturn:
     last_error = None
     previous_message = None
 
-    check_response(get_api_answer(timestamp))
-
     while True:
         try:
             response = get_api_answer(timestamp)
+            check_response(response)
             timestamp = response['current_date']
-            if response['homeworks']:
-                message = parse_status(response['homeworks'][0])
+            homeworks = response['homeworks']
+            if homeworks:
+                message = parse_status(homeworks[0])
                 if previous_message != message:
                     send_message(
                         bot=bot,
@@ -134,7 +136,7 @@ def main() -> NoReturn:
 
         except Exception as error:
             message = f'Сбой в работе программы: {error}'
-            logging.error(message)
+            logger.error(message)
             if error != last_error:
                 send_message(
                     bot=bot,
