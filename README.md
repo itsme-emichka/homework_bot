@@ -26,11 +26,11 @@
 
 4. Создать и активировать виртуальное окружение
 
-  1. `python -m venv venv`  
-  2. - Windows - `source venv/Scripts/activate`  
-     - Linux/MacOS - `source venv/bin/activate`  
-  3. Поставить зависимости  
-  `pip install -r requirements.txt`  
+- `python -m venv venv`  
+- Windows - `source venv/Scripts/activate`  
+  Linux/MacOS - `source venv/bin/activate`  
+- Поставить зависимости  
+`pip install -r requirements.txt`  
 
 5. Запустить бота  
 `python homework.py` 
