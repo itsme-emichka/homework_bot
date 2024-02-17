@@ -28,9 +28,10 @@
 
 - `python -m venv venv`  
 - Windows - `source venv/Scripts/activate`  
-  Linux/MacOS - `source venv/bin/activate`  
-- Поставить зависимости  
+  Linux/MacOS - `source venv/bin/activate`
+
+5. Поставить зависимости  
 `pip install -r requirements.txt`  
 
-5. Запустить бота  
+6. Запустить бота  
 `python homework.py` 
